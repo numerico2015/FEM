@@ -13,8 +13,18 @@ function e = errores(problem,beta,norma,h)
    
     if norma == 1
         
-        [Puntos,Triangulos] = circleMesh(h);
+        if problem == 1
 
+            [Puntos,Triangulos] = circleMesh(h);
+
+        end
+
+        if problem == 2
+    
+            [Puntos,Triangulos] = pacman(h);
+    
+        end
+        
         [~,boolean] = essentialBoundaryOnCircleFilter(Puntos,Triangulos,problem);
         
         [A, b] = getStiffnessMatrixAndLVector(Puntos,Triangulos,beta,f,problem);

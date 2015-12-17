@@ -1,9 +1,17 @@
 function e = norm2Error(h,beta,problem)
 
 f = @(x) 2 - x*beta';
+if problem == 1
 
-[Puntos,Triangulos] = circleMesh(h);
+    [Puntos,Triangulos] = circleMesh(h);
 
+end
+
+if problem == 2
+    
+    [Puntos,Triangulos] = pacman(h);
+    
+end
 [A, b] = getStiffnessMatrixAndLVector(Puntos,Triangulos,beta,f,problem);
 
 uh = A\b;
@@ -27,14 +35,19 @@ for t=1:cantidadDeTriangulos
    indice_2 = triangulo(2);
    
    indice_3 = triangulo(3);
+   
+   
+    
     
     %---------- Triangulo con 2 puntos en la frontera ------------%
     
-    if (0 == IndexInt(indice_1)) && (0 == IndexInt(indice_2))
+    if ((0 == IndexInt(indice_1)) && (0 == IndexInt(indice_2))) && ~(0 == IndexInt(indice_3))
         
         [at,phit,~]=getLocalBase(Puntos,triangulo);
         
-        phi = @(p) uh(IndexInt(indice_3))*phit{3}(p);
+        base = phit{3};
+        
+        phi = @(p) uh(IndexInt(indice_3))*base(p);
         
         %---puntos intermedios----%
         
@@ -50,8 +63,6 @@ for t=1:cantidadDeTriangulos
         
         error_T =  ((u(p13)-phi(p13))^2 + (u(p23)-phi(p23))^2)*Area_T/3;
         
-        error_T = sqrt(error_T);
-        
         % sumo al error
         
         e = e +error_T;
@@ -59,7 +70,7 @@ for t=1:cantidadDeTriangulos
         
     end
     
-    if (0 == IndexInt(indice_1)) && (0 == IndexInt(indice_3))
+    if (0 == IndexInt(indice_1)) && (0 == IndexInt(indice_3)) && ~(0 == IndexInt(indice_2))
     
         [at,phit,~]=getLocalBase(Puntos,triangulo);
         
@@ -79,15 +90,13 @@ for t=1:cantidadDeTriangulos
         
         error_T =  ((u(p12)-phi(p12))^2 + (u(p23)-phi(p23))^2)*Area_T/3;
         
-        error_T = sqrt(error_T);
-        
         % sumo al error
         
         e = e +error_T;
         
     end
     
-    if (0 == IndexInt(indice_2)) && (0 == IndexInt(indice_3))
+    if ((0 == IndexInt(indice_2)) && (0 == IndexInt(indice_3))) && ~(0 == IndexInt(indice_1))
     
         [at,phit,~]=getLocalBase(Puntos,triangulo);
         
@@ -106,8 +115,6 @@ for t=1:cantidadDeTriangulos
         %--- Integro usando cuadratura---%
         
         error_T =  ((u(p12)-phi(p12))^2 + (u(p13)-phi(p13))^2)*Area_T/3;
-        
-        error_T = sqrt(error_T);
         
         % sumo al error
         
@@ -139,8 +146,6 @@ for t=1:cantidadDeTriangulos
         
         error_T =  ((u(p12)-phi(p12))^2 +(u(p23)-phi(p23))^2+ (u(p13)-phi(p13))^2)*Area_T/3;
         
-        error_T = sqrt(error_T);
-        
         % sumo al error
         
         e = e +error_T;
@@ -171,8 +176,6 @@ for t=1:cantidadDeTriangulos
         
         error_T =  ((u(p12)-phi(p12))^2 +(u(p23)-phi(p23))^2+ (u(p13)-phi(p13))^2)*Area_T/3;
         
-        error_T = sqrt(error_T);
-        
         % sumo al error
         
         e = e +error_T;
@@ -201,8 +204,6 @@ for t=1:cantidadDeTriangulos
         %--- Integro usando cuadratura---%
         
         error_T =  ((u(p12)-phi(p12))^2 +(u(p23)-phi(p23))^2+ (u(p13)-phi(p13))^2)*Area_T/3;
-        
-        error_T = sqrt(error_T);
         
         % sumo al error
         
@@ -238,14 +239,14 @@ for t=1:cantidadDeTriangulos
         
         error_T =  ((u(p12)-phi(p12))^2 +(u(p23)-phi(p23))^2+ (u(p13)-phi(p13))^2)*Area_T/3;
         
-        error_T = sqrt(error_T);
-        
         % sumo al error
         
         e = e +error_T;
     end
     
-
+end
+    
+e = sqrt(e);
 
             
             
