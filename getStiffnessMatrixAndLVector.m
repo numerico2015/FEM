@@ -1,6 +1,6 @@
-function [A, b] = getStiffnessMatrixAndLVector(p,t,beta,f) 
+function [A, b] = getStiffnessMatrixAndLVector(p,t,beta,f,problem) 
 
-[circleBoundary,~] = essentialBoundaryOnCircleFilter(p,0,0,1);
+[circleBoundary,~] = essentialBoundaryOnCircleFilter(p,t,problem);
 
 [m,~] = size(p);
 

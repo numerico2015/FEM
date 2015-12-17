@@ -1,20 +1,26 @@
-function passed = problem1(h,beta, tol)
+function [passed,p,t,u,uhtotal] = problem1(h,beta, tol)
     f = @(x) 2 - x * beta';
     
     [p,t] = circleMesh(h);
     
-    [A, b] = getStiffnessMatrixAndLVector(p,t,beta,f);
+    [A, b] = getStiffnessMatrixAndLVector(p,t,beta,f,1);
     
-    [~,pInterior] = essentialBoundaryOnCircleFilter(p,0,0,1);
+    [~,boolean] = essentialBoundaryOnCircleFilter(p,t,1);
     
     uh = A\b;
     
-    u = (1 - sum(pInterior.^2,2))./2;
+    [n,~] = size(p);
     
-    passed = norm(u-uh,2)<tol;
+    uhtotal = zeros(n,1);
+    
+    uhtotal(~boolean) = uh;
+    
+    u = (1 - sum(p.^2,2))./2;
+    
+    passed = norm(u-uhtotal,2)<tol;
     
     figure(1)
-    plot(uh,'r');
+    plot(uhtotal,'r');
     hold on;
     plot(u,'g');
     legend('reconstruction','solution')
